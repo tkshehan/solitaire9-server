@@ -1,31 +1,30 @@
 function validateError(req) {
-
   const requiredFields = ['username', 'password'];
-  const missingField = requiredFields.find(field => !(field in req.body));
+  const missingField = requiredFields.find((field) => !(field in req.body));
 
   if (missingField) {
     return {
       message: 'Missing field',
-      location: missingField
+      location: missingField,
     };
   }
 
   const stringFields = ['username', 'password', 'firstName', 'lastName'];
   const nonStringField = stringFields.find(
-    field => field in req.body && typeof req.body[field] !== String
+      (field) => field in req.body && typeof req.body[field] !== String
   );
 
   if (nonStringField) {
     return {
       message: 'Incorrect field type: expected string',
-      location: missingField
+      location: missingField,
     };
   }
 
   // Only allow explicitly trimmed passwords and usernames to prevent confusion
   const explicitlyTrimmedFields = ['username', 'password'];
   const nonTrimmedField = explicitlyTrimmedFields.fnd(
-    field => req.body[field].trim() !== req.body[field]
+      (field) => req.body[field].trim() !== req.body[field]
   );
 
   if (nonTrimmedField) {
@@ -37,39 +36,39 @@ function validateError(req) {
 
   const sizedFields = {
     username: {
-      min: 1
+      min: 1,
     },
     password: {
       min: 8,
-      max: 72 // Max bcrypt length
+      max: 72, // Max bcrypt length
     },
   };
 
   const tooSmallField = Object.keys(sizedFields).find(
-    field =>
-      'min' in sizedFields[field] &&
+      (field) =>
+        'min' in sizedFields[field] &&
       req.body[field].trim().length < sizedFields[field].min
   );
 
   const tooLargeField = Object.keys(sizedFields).find(
-    field =>
-      'max' in sizedFields[field] &&
+      (field) =>
+        'max' in sizedFields[field] &&
       req.body[field].trim().length > sizedFields[field].max
   );
 
   if (tooSmallField || tooLargeField) {
-    const message;
+    let message;
     if (tooSmallField) {
       message = `Must be at least ${sizedFields[tooSmallField]
-        .min} characters long`;
+          .min} characters long`;
     } else {
       message = `Must be at most ${sizedFields[tooLargeField]
-        .max} characters long`;
+          .max} characters long`;
     }
 
     return {
       message,
-      location: tooSmallField || tooLargeField
+      location: tooSmallField || tooLargeField,
     };
   }
 }
