@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const morgan = require('morgan');
 const passport = require('passport');
 
+const {router: usersRouter} = require('./users');
+
 mongoose.Promise = global.Promise;
 
 const {PORT, DATABASE_URL} = require('./config');
@@ -26,6 +28,8 @@ app.use(function(req, res, next) {
 
 passport.use(localStrategy);
 passport.use(jwtStrategy);
+
+app.use('/api/users/', usersRouter);
 
 const jwtAuth = passport.authenticate('jwt', {session: false});
 
