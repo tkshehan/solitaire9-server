@@ -35,6 +35,8 @@ app.use('/api/auth/', authRouter);
 
 const jwtAuth = passport.authenticate('jwt', {session: false});
 
+
+// Example of jwtAuth as middleware to restrict access
 app.get('/api/protected', jwtAuth, (req, res) => {
   return res.json({
     data: 'test data',
