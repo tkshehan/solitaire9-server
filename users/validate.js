@@ -11,23 +11,25 @@ function validateError(req) {
 
   const stringFields = ['username', 'password', 'firstName', 'lastName'];
   const nonStringField = stringFields.find(
-      (field) => field in req.body && typeof req.body[field] !== String
+      (field) => field in req.body && typeof req.body[field] !== 'string'
   );
 
   if (nonStringField) {
     return {
       message: 'Incorrect field type: expected string',
-      location: missingField,
+      location: nonStringField,
     };
   }
 
   // Only allow explicitly trimmed passwords and usernames to prevent confusion
   const explicitlyTrimmedFields = ['username', 'password'];
-  const nonTrimmedField = explicitlyTrimmedFields.fnd(
+  const nonTrimmedField = explicitlyTrimmedFields.find(
       (field) => req.body[field].trim() !== req.body[field]
   );
 
   if (nonTrimmedField) {
+    console.log(nonTrimmedField);
+    console.log(req.body[nonTrimmedField]);
     return {
       message: 'Cannot start or end with whitespace',
       location: nonTrimmedField,

@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "mocha --colors",
+    "test": "mocha --colors --exit",
     "start": "node server.js",
     "nodemon": "nodemon server.js"
   },
