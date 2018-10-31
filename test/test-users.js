@@ -412,3 +412,5 @@ describe('/api/user', function() {
     });
   });
 });
+
+module.exports = {generateTestUser};

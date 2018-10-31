@@ -6,15 +6,15 @@ const jwt = require('jsonwebtoken');
 const config = require('../config');
 const router = express.Router();
 
-router.use(bodyParser.json());
-
 const createAuthToken = function(user) {
   return jwt.sign({user}, config.JWT_SECRET, {
     subject: user.username,
     expiresIn: config.JWT_EXPIRY,
-    alogrithm: 'HS256',
+    algorithm: 'HS256',
   });
 };
+
+router.use(bodyParser.json());
 
 // Login with username and password
 const localAuth = passport.authenticate('local', {session: false});
