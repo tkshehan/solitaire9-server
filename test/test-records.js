@@ -17,7 +17,7 @@ function generateTestRecord() {
     username: faker.internet.userName(),
     score: faker.random.number(),
     time: faker.random.number(),
-    date: faker.date.recent(),
+    date: faker.date.past(),
   };
 }
 
@@ -84,6 +84,101 @@ describe('/api/records', function() {
           })
           .then(function(_count) {
             expect(_count).to.equal(count + 1);
+          });
+    });
+  });
+
+  describe('GET /best/', function() {
+    it('Should give highest scoring records from highest to lowest',
+        function() {
+          const seedData = [...Array(40)].map(() => generateTestRecord());
+
+          return Record.insertMany(seedData)
+              .then(() => {
+                return chai.request(app)
+                    .get('/api/records/best/');
+              })
+              .then(function(res) {
+                const highScore = seedData.reduce((high, current) => {
+                  if (high.score < current.score) return current;
+                  return high;
+                });
+                expect(highScore.score).to.equal(res.body[0].score);
+                for (let i = 0; i < res.body.length - 1; i++) {
+                  expect(res.body[i].score)
+                      .to.be.greaterThan(res.body[i + 1].score);
+                }
+              });
+        });
+  });
+
+  describe('GET /times/', function() {
+    it('Should give the fast scoring times from lowest to highest', function() {
+      const seedData = [...Array(40)].map(() => generateTestRecord());
+
+      return Record.insertMany(seedData)
+          .then(() => {
+            return chai.request(app)
+                .get('/api/records/times/');
+          })
+          .then(function(res) {
+            const fastest = seedData.reduce((fastest, current) => {
+              if (fastest.time > current.time) return current;
+              return fastest;
+            });
+            expect(res.body[0].time).to.equal(fastest.time);
+            for (let i = 0; i < res.body.length - 1; i++) {
+              expect(res.body[i].time)
+                  .to.be.lessThan(res.body[i + 1].time);
+            }
+          });
+    });
+  });
+
+  describe('GET /latest/', function() {
+    it('Should give the most recent records', function() {
+      const seedData = [...Array(40)].map(() => generateTestRecord());
+
+      return Record.insertMany(seedData)
+          .then(() => {
+            return chai.request(app)
+                .get('/api/records/latest/');
+          })
+          .then(function(res) {
+            const recent = seedData.reduce((recent, current) => {
+              if (Date.parse(recent.date) < Date.parse(current.date)) {
+                return current;
+              }
+              return recent;
+            });
+            expect(res.body[0].date).to.equal(recent.date.toISOString());
+            for (let i = 0; i < res.body.length - 1; i++) {
+              expect(Date.parse(res.body[i].date))
+                  .to.be.greaterThan(Date.parse(res.body[i + 1].date));
+            }
+          });
+    });
+  });
+
+  describe('GET /profile/:username', function() {
+    it('Should get recent records for the user', function() {
+      const testUser = 'Schmitty';
+      const seedData = [...Array(40)].map(() => {
+        const record = generateTestRecord();
+        record.username = testUser;
+        return record;
+      });
+      return Record.insertMany(seedData)
+          .then(() => {
+            return chai.request(app)
+                .get(`/api/records/profile/${testUser}`);
+          })
+          .then(function(res) {
+            expect(res.body[0].username).to.equal(testUser);
+            for (let i = 0; i < res.body.length - 1; i++) {
+              expect(Date.parse(res.body[i].date))
+                  .to.be.greaterThan(Date.parse(res.body[i + 1].date));
+            }
           });
     });
   });

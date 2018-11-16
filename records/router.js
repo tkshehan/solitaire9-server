@@ -49,7 +49,7 @@ router.get('/best/', jsonParser, (req, res) => {
 // Get /times to find best times
 router.get('/times/', jsonParser, (req, res) => {
   Record.find({})
-      .sort('-time')
+      .sort('time')
       .limit(30)
       .then((records) => {
         res.status(201).json(records);
@@ -74,7 +74,7 @@ router.get('/latest/', jsonParser, (req, res) => {
       });
 });
 
-router.get('/date/:username', (req, res) => {
+router.get('/profile/:username', (req, res) => {
   Record.find({username: req.params.username})
       .sort('-date')
       .limit(30)
