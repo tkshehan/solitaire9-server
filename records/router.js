@@ -9,8 +9,8 @@ const {Record} = require('./models');
 const router = express.Router();
 
 // Post to add a new record
-router.post('/', jwtAuth, (req, res) => {
-  const requiredFields = ['username, score'];
+router.post('/', jwtAuth, jsonParser, (req, res) => {
+  const requiredFields = ['username', 'score'];
   for (const field of requiredFields) {
     if (!(field in req.body)) {
       const message = `Missing ${field} in request body`;

@@ -24,6 +24,7 @@ RecordSchema.methods.serialize = function() {
     score: this.score,
     time: this.time,
     date: this.date,
+    id: this.id,
   };
 };
 

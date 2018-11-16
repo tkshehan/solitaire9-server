@@ -1,3 +1,5 @@
+/* eslint-disable no-invalid-this */
+/* eslint-disable no-unused-expressions */
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const faker = require('faker');
@@ -19,7 +21,7 @@ function generateTestUser() {
   };
 }
 
-describe('/api/user', function() {
+describe('/api/users', function() {
   const testUser = generateTestUser();
 
   this.beforeAll(function() {
